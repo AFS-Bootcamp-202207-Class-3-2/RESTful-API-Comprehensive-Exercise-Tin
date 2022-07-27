@@ -1,4 +1,4 @@
-package com.rest.springbootemployee;
+package com.rest.springbootemployee.controller;
 
 import com.rest.springbootemployee.pojo.Employee;
 import com.rest.springbootemployee.repository.EmployeeRepository;

@@ -1,4 +1,4 @@
-package com.rest.springbootemployee;
+package com.rest.springbootemployee.service;
 
 
 import com.rest.springbootemployee.pojo.Employee;
