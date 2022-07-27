@@ -38,8 +38,26 @@ public class EmployeeServiceTest {
         List<Employee> employees = employeeService.findAll();
 
         //then
-
         assertEquals(2, employees.size());
         assertEquals(firstEmployee, employees.get(0));
+    }
+
+    @Test
+    void should_update_only_age_and_salary_when_update_given_employee() {
+        //given
+        Employee employeeToUpdate = new Employee(1, "Susan", 23, "female", 10000);
+        Employee employeeInUpdateRequest = new Employee(1, "Mathew", 25, "male", 12000);
+        given(employeeRepository.findById(1)).willReturn(employeeToUpdate);
+
+        //when
+        Employee employee = employeeService.update(1, employeeInUpdateRequest);
+
+        //then
+        assertEquals(employee.getId(), 1);
+        assertEquals(employee.getName(), "Susan");
+        assertEquals(employee.getAge(), 25);
+        assertEquals(employee.getGender(), "female");
+        assertEquals(employee.getSalary(), 12000);
+
     }
 }
