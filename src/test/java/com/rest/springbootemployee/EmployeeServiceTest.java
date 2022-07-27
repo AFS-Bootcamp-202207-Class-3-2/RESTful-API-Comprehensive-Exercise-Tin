@@ -96,4 +96,21 @@ public class EmployeeServiceTest {
     }
 
 
+    @Test
+    void should_get_a_employee_when_find_given_id() {
+        //given
+        Employee employee = new Employee(1, "Susan", 23, "female", 10000);
+        given(employeeRepository.findById(1)).willReturn(employee);
+
+        //when
+        Employee employeeById = employeeService.findById(1);
+
+        //then
+        assertEquals(employeeById.getId(), 1);
+        assertEquals(employeeById.getName(), "Susan");
+        assertEquals(employeeById.getAge(), 23);
+        assertEquals(employeeById.getGender(), "female");
+        assertEquals(employeeById.getSalary(), 10000);
+    }
+
 }
