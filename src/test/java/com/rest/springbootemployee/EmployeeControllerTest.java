@@ -114,7 +114,7 @@ public class EmployeeControllerTest {
 
 
     @Test
-    void should_delete_employee_when_perform_put_given_a_employee() throws Exception {
+    void should_delete_employee_when_perform_delete_given_a_employee() throws Exception {
         //given
         employeeRepository.insert(new Employee(0, "Lisa", 22, "female", 10000));
 
@@ -149,7 +149,7 @@ public class EmployeeControllerTest {
     }
 
     @Test
-    void should_get_a_employee_when_perform_get_given_gender() throws Exception{
+    void should_get_employees_when_perform_get_given_gender() throws Exception{
         //given
         employeeRepository.insert(new Employee(0, "Sally", 22, "female", 10000));
 
@@ -166,4 +166,28 @@ public class EmployeeControllerTest {
         //then
     }
 
+    @Test
+    void should_get_employees_when_perform_get_given_page_and_page_size() throws Exception{
+        //given
+        employeeRepository.insert(new Employee(0, "Sally", 22, "female", 10000));
+        employeeRepository.insert(new Employee(1, "Lily", 25, "female", 16000));
+
+        //when
+        client.perform(MockMvcRequestBuilders.get("/employees")
+                        .param("page","1").param("pageSize","2"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Sally"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(22))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value("female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(10000))
+
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Lily"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].age").value(25))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].gender").value("female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[1].salary").value(16000));
+
+        //then
+    }
 }
