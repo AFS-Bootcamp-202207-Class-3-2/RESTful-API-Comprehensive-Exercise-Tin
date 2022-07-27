@@ -60,4 +60,22 @@ public class EmployeeServiceTest {
         assertEquals(employee.getSalary(), 12000);
 
     }
+
+    @Test
+    void should_a_new_employee_when_create_given_employee() {
+        //given
+        Employee employeeToCreate = new Employee(1, "Susan", 23, "female", 10000);
+        given(employeeRepository.insert(employeeToCreate)).willReturn(employeeToCreate);
+
+        //when
+        Employee employee = employeeService.create(employeeToCreate);
+
+        //then
+        assertEquals(employee.getId(), 1);
+        assertEquals(employee.getName(), "Susan");
+        assertEquals(employee.getAge(), 23);
+        assertEquals(employee.getGender(), "female");
+        assertEquals(employee.getSalary(), 10000);
+
+    }
 }

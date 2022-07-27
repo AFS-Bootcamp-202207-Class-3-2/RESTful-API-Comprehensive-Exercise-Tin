@@ -29,4 +29,9 @@ public class EmployeeService {
         }
         return updatedEmployee;
     }
+
+    public Employee create(Employee employee) {
+        return employeeRepository.insert(employee);
+    }
+
 }

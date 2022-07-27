@@ -45,7 +45,6 @@ public class EmployeeRepository {
     }
 
     public Employee insert(Employee employee) {
-        employee.setId(generateNewId());
         employees.add(employee);
         return employee;
     }
