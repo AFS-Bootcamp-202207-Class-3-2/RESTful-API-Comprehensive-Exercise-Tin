@@ -34,4 +34,7 @@ public class EmployeeService {
         return employeeRepository.insert(employee);
     }
 
+    public Employee delete(int id) {
+        return employeeRepository.delete(id);
+    }
 }

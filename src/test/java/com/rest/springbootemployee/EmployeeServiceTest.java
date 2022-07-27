@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(SpringExtension.class)
@@ -58,7 +59,6 @@ public class EmployeeServiceTest {
         assertEquals(employee.getAge(), 25);
         assertEquals(employee.getGender(), "female");
         assertEquals(employee.getSalary(), 12000);
-
     }
 
     @Test
@@ -76,6 +76,19 @@ public class EmployeeServiceTest {
         assertEquals(employee.getAge(), 23);
         assertEquals(employee.getGender(), "female");
         assertEquals(employee.getSalary(), 10000);
-
     }
+
+    @Test
+    void should_a_employee_when_delete_given_id() {
+        //given
+        Employee employeeToCreate = new Employee(1, "Susan", 23, "female", 10000);
+        given(employeeRepository.insert(employeeToCreate)).willReturn(employeeToCreate);
+        employeeService.create(employeeToCreate);
+        //when
+        Employee deletedEmployee = employeeService.delete(1);
+
+        //then
+        assertNull(deletedEmployee);
+    }
+
 }
