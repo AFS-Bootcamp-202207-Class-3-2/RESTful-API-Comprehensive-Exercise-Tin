@@ -66,8 +66,9 @@ public class CompanyRepository {
 
     public Company update(Integer id, Company company) {
         Company updatedCompany = findById(id);
-        updatedCompany.setCompanyName(company.getCompanyName());
-        updatedCompany.setEmployeeList(company.getEmployeeList());
+        if (company.getCompanyName() != null) {
+            updatedCompany.setCompanyName(company.getCompanyName());
+        }
         return updatedCompany;
     }
 
