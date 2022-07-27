@@ -30,6 +30,7 @@ class CompanyControllerTest {
     void clearEmployeeInRepository(){
         companyRepository.clean();
     }
+
     @Test
     void should_get_all_companies_when_perform_get_given_companies() throws Exception{
         //given
@@ -49,6 +50,28 @@ class CompanyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].employeeList[*].age", containsInAnyOrder(22, 26)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].employeeList[*].gender", everyItem(is("female"))))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].employeeList[*].salary", containsInAnyOrder(10000, 5000)));
+
+        //then
+    }
+
+    @Test
+    void should_get_a_company_when_perform_get_given_id() throws Exception{
+        //given
+        ArrayList<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        companyRepository.insert(new Company(1, "OOCL", employees));
+
+        //when
+        client.perform(MockMvcRequestBuilders.get("/companies/{id}",0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.companyName").value("OOCL"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].name", containsInAnyOrder("Sally","Lily")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].age", containsInAnyOrder(22, 26)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].gender", everyItem(is("female"))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].salary", containsInAnyOrder(10000, 5000)));
 
         //then
     }
