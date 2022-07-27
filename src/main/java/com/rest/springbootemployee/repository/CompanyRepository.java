@@ -72,10 +72,9 @@ public class CompanyRepository {
         return updatedCompany;
     }
 
-    public Company delete(Integer id) {
+    public void delete(Integer id) {
         Company company = findById(id);
         companies.remove(company);
-        return company;
     }
 
     public void clean() {
