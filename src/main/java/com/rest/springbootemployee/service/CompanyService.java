@@ -28,4 +28,8 @@ public class CompanyService {
     public Company create(Company company) {
         return companyRepository.insert(company);
     }
+
+    public Company update(int id, Company company) {
+        return companyRepository.update(id, company);
+    }
 }

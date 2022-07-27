@@ -104,4 +104,23 @@ public class CompanyServiceTest {
         //then
         assertEquals(companyToCreate, company);
     }
+
+    @Test
+    void should_update_only_company_name_when_update_given_a_company() {
+        //given
+        ArrayList<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        Company companyToUpdate = new Company(1, "OOCL", employees);
+
+        Company updatedCompany = new Company(1,"COSU", employees);
+        given(companyRepository.update(1,companyToUpdate)).willReturn(updatedCompany);
+
+        //when
+        Company company = companyService.update(1, updatedCompany);
+
+        //then
+        assertEquals(updatedCompany, company);
+    }
 }
