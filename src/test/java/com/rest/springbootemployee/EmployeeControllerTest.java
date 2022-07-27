@@ -2,6 +2,7 @@ package com.rest.springbootemployee;
 
 import com.rest.springbootemployee.pojo.Employee;
 import com.rest.springbootemployee.repository.EmployeeRepository;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
 
@@ -170,22 +171,18 @@ public class EmployeeControllerTest {
         //given
         employeeRepository.insert(new Employee(0, "Sally", 22, "female", 10000));
         employeeRepository.insert(new Employee(1, "Lily", 25, "female", 16000));
+        employeeRepository.insert(new Employee(2, "Tom", 25, "male", 16000));
+
 
         //when
         client.perform(MockMvcRequestBuilders.get("/employees")
                         .param("page","1").param("pageSize","2"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Sally"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(22))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value("female"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(10000))
-
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].id").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].name").value("Lily"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].age").value(25))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].gender").value("female"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[1].salary").value(16000));
+                .andExpect(MockMvcResultMatchers.jsonPath("$", Matchers.hasSize(2)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", containsInAnyOrder("Sally","Lily")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].age", containsInAnyOrder(22, 25)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].gender", everyItem(is("female"))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].salary", containsInAnyOrder(10000, 16000)));
 
         //then
     }
