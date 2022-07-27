@@ -76,4 +76,24 @@ class CompanyControllerTest {
         //then
     }
 
+    @Test
+    void should_get_employee_list_when_perform_get_given_company_id() throws Exception{
+        //given
+        ArrayList<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        companyRepository.insert(new Company(1, "OOCL", employees));
+
+        //when
+        client.perform(MockMvcRequestBuilders.get("/companies/{id}/employees", 0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].name", containsInAnyOrder("Sally","Lily")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].age", containsInAnyOrder(22, 26)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].gender", everyItem(is("female"))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[*].salary", containsInAnyOrder(10000, 5000)));
+
+        //then
+    }
+
 }
