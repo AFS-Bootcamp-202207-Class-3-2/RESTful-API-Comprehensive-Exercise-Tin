@@ -44,4 +44,22 @@ public class CompanyServiceTest {
         assertEquals(1, allCompanies.size());
         assertEquals(ooclCompany, allCompanies.get(0));
     }
+
+    @Test
+    void should_a_company_when_find_by_id() {
+        //given
+        ArrayList<Company> companies = new ArrayList<>();
+        ArrayList<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        Company ooclCompany = new Company(1, "OOCL", employees);
+        given(companyRepository.findById(1)).willReturn(ooclCompany);
+
+        //when
+        Company company = companyService.findById(1);
+
+        //then
+        assertEquals(ooclCompany, company);
+    }
 }
