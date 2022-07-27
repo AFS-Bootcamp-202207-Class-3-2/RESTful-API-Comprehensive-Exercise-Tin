@@ -12,6 +12,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import java.awt.geom.GeneralPath;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -146,4 +147,23 @@ public class EmployeeControllerTest {
 
         //then
     }
+
+    @Test
+    void should_get_a_employee_when_perform_get_given_gender() throws Exception{
+        //given
+        employeeRepository.insert(new Employee(0, "Sally", 22, "female", 10000));
+
+        //when
+        client.perform(MockMvcRequestBuilders.get("/employees")
+                        .param("gender","female"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Sally"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(22))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value("female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(10000));
+
+        //then
+    }
+
 }
