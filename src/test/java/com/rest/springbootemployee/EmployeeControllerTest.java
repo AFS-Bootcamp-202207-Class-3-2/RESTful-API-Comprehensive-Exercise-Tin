@@ -52,6 +52,34 @@ public class EmployeeControllerTest {
         //then
     }
 
+    @Test
+    void should_create_a_new_employee_when_perform_post_given_a_new_employee() throws Exception {
+        //given
+        String newEmployeeJson ="{\n" +
+                "        \"name\": \"Lisa\",\n" +
+                "        \"age\": 21,\n" +
+                "        \"gender\": \"female\",\n" +
+                "        \"salary\": 2000\n" +
+                "    }";
 
+        //when
+
+        client.perform(MockMvcRequestBuilders.post("/employees")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newEmployeeJson))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Lisa"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(21))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value("female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(2000));
+
+        //then
+        List<Employee> employees = employeeRepository.findAll();
+        assertThat(employees, hasSize(1));
+        assertThat(employees.get(0).getName(), equalTo("Lisa"));
+        assertThat(employees.get(0).getAge(), equalTo(21));
+        assertThat(employees.get(0).getGender(), equalTo("female"));
+        assertThat(employees.get(0).getSalary(), equalTo(2000));
+    }
 
 }
