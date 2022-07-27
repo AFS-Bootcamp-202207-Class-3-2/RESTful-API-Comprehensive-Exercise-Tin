@@ -45,6 +45,7 @@ public class EmployeeRepository {
     }
 
     public Employee insert(Employee employee) {
+        employee.setId(generateNewId());
         employees.add(employee);
         return employee;
     }
@@ -58,8 +59,12 @@ public class EmployeeRepository {
 
     public Employee update(int id, Employee employee) {
         Employee updateEmployee = findById(id);
-        updateEmployee.setAge(employee.getAge());
-        updateEmployee.setSalary(employee.getSalary());
+        if(employee.getAge() != null){
+            updateEmployee.setAge(employee.getAge());
+        }
+        if(employee.getAge() != null){
+            updateEmployee.setSalary(employee.getSalary());
+        }
         return updateEmployee;
     }
 

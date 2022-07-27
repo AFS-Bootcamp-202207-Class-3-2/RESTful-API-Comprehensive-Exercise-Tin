@@ -1,4 +1,4 @@
-package com.rest.springbootemployee;
+package com.rest.springbootemployee.service;
 
 import com.rest.springbootemployee.pojo.Employee;
 import com.rest.springbootemployee.repository.EmployeeRepository;
@@ -20,13 +20,7 @@ public class EmployeeService {
     }
 
     public Employee update(int id, Employee employee) {
-        Employee updatedEmployee = employeeRepository.findById(id);
-        if(employee.getAge() != null){
-            updatedEmployee.setAge(employee.getAge());
-        }
-        if(employee.getAge() != null){
-            updatedEmployee.setSalary(employee.getSalary());
-        }
+        Employee updatedEmployee = employeeRepository.update(id, employee);
         return updatedEmployee;
     }
 

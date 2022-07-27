@@ -8,12 +8,12 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import com.rest.springbootemployee.service.EmployeeService;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -49,18 +49,15 @@ public class EmployeeServiceTest {
     void should_update_only_age_and_salary_when_update_given_employee() {
         //given
         Employee employeeToUpdate = new Employee(1, "Susan", 23, "female", 10000);
-        Employee employeeInUpdateRequest = new Employee(1, "Mathew", 25, "male", 12000);
-        given(employeeRepository.findById(1)).willReturn(employeeToUpdate);
+        Employee employeeInUpdateRequest = new Employee(2, "Mathew", 25, "male", 12000);
+        Employee updatedEmployee = new Employee(1, "Susan", 25, "female", 12000);
+        given(employeeRepository.update(1,employeeInUpdateRequest)).willReturn(updatedEmployee);
 
         //when
         Employee employee = employeeService.update(1, employeeInUpdateRequest);
 
         //then
-        assertEquals(employee.getId(), 1);
-        assertEquals(employee.getName(), "Susan");
-        assertEquals(employee.getAge(), 25);
-        assertEquals(employee.getGender(), "female");
-        assertEquals(employee.getSalary(), 12000);
+        assertEquals(employee, updatedEmployee);
     }
 
     @Test

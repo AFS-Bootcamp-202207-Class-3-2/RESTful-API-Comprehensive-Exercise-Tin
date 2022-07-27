@@ -67,6 +67,7 @@ public class EmployeeControllerTest {
         client.perform(MockMvcRequestBuilders.post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newEmployeeJson))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Lisa"))
                 .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(21))
@@ -120,11 +121,7 @@ public class EmployeeControllerTest {
 
         //when
         client.perform(MockMvcRequestBuilders.delete("/employees/{id}",0))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Lisa"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(22))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value("female"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(10000));
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
 
         //then
         List<Employee> employees = employeeRepository.findAll();
