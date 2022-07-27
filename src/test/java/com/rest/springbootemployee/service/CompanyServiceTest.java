@@ -136,4 +136,21 @@ public class CompanyServiceTest {
         //then
         verify(companyRepository,times(1)).delete(1);
     }
+
+    @Test
+    void should_get_employees_when_find_by_id() {
+        //given
+        ArrayList<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        Company company = new Company(1, "OOCL", employees);
+        given(companyRepository.findEmployeesById(1)).willReturn(employees);
+
+        //when
+        List<Employee> employeesById = companyService.findEmployeesById(1);
+
+        //then
+        assertEquals(employeesById, employees);
+    }
 }
