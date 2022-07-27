@@ -112,4 +112,21 @@ public class EmployeeControllerTest {
     }
 
 
+    @Test
+    void should_delete_employee_when_perform_put_given_a_employee() throws Exception {
+        //given
+        employeeRepository.insert(new Employee(0, "Lisa", 22, "female", 10000));
+
+        //when
+        client.perform(MockMvcRequestBuilders.delete("/employees/{id}",0))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Lisa"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(22))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value("female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(10000));
+
+        //then
+        List<Employee> employees = employeeRepository.findAll();
+        assertThat(employees, hasSize(0));
+    }
 }
