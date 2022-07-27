@@ -11,8 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.util.MultiValueMapAdapter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
@@ -96,4 +100,34 @@ class CompanyControllerTest {
         //then
     }
 
+
+    @Test
+    void should_get_companies_when_perform_get_given_page_and_page_size() throws Exception{
+        //given
+        ArrayList<Employee> firstCompanyEmployees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        ArrayList<Employee> secondCompanyEmployees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Tom", 25, "male", 6000));
+            add(new Employee(1, "Tony", 25, "male", 6000));
+        }};
+        companyRepository.insert(new Company(1, "OOCL", firstCompanyEmployees));
+        companyRepository.insert(new Company(1, "COSU", secondCompanyEmployees));
+
+        //when
+        MultiValueMap<String, String> paramsMap = new LinkedMultiValueMap<>();
+        paramsMap.put("page", Collections.singletonList("1"));
+        paramsMap.put("pageSize", Collections.singletonList("1"));
+        client.perform(MockMvcRequestBuilders.get("/companies/{id}",0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.companyName").value("OOCL"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].name", containsInAnyOrder("Sally","Lily")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].age", containsInAnyOrder(22, 26)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].gender", everyItem(is("female"))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].salary", containsInAnyOrder(10000, 5000)));
+
+        //then
+    }
 }
