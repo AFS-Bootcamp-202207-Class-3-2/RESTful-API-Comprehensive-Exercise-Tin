@@ -15,6 +15,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(SpringExtension.class)
 public class EmployeeServiceTest {
@@ -71,28 +73,18 @@ public class EmployeeServiceTest {
         Employee employee = employeeService.create(employeeToCreate);
 
         //then
-        assertEquals(employee.getId(), 1);
-        assertEquals(employee.getName(), "Susan");
-        assertEquals(employee.getAge(), 23);
-        assertEquals(employee.getGender(), "female");
-        assertEquals(employee.getSalary(), 10000);
+        assertEquals(employee, employeeToCreate);
     }
 
     @Test
     void should_a_employee_when_delete_given_id() {
         //given
-        Employee employee= new Employee(1, "Susan", 23, "female", 10000);
-        given(employeeRepository.delete(1)).willReturn(employee);
 
         //when
-        Employee deletedEmployee = employeeService.delete(1);
+        employeeService.delete(1);
 
         //then
-        assertEquals(deletedEmployee.getId(), 1);
-        assertEquals(deletedEmployee.getName(), "Susan");
-        assertEquals(deletedEmployee.getAge(), 23);
-        assertEquals(deletedEmployee.getGender(), "female");
-        assertEquals(deletedEmployee.getSalary(), 10000);
+        verify(employeeRepository,times(1)).delete(1);
     }
 
 
@@ -106,11 +98,7 @@ public class EmployeeServiceTest {
         Employee employeeById = employeeService.findById(1);
 
         //then
-        assertEquals(employeeById.getId(), 1);
-        assertEquals(employeeById.getName(), "Susan");
-        assertEquals(employeeById.getAge(), 23);
-        assertEquals(employeeById.getGender(), "female");
-        assertEquals(employeeById.getSalary(), 10000);
+        assertEquals(employeeById, employee);
     }
 
     @Test
@@ -127,16 +115,8 @@ public class EmployeeServiceTest {
         List<Employee> employeesByGender = employeeService.findByGender("female");
 
         //then
-        assertEquals(employeesByGender.get(0).getId(), 1);
-        assertEquals(employeesByGender.get(0).getName(), "Susan");
-        assertEquals(employeesByGender.get(0).getAge(), 23);
-        assertEquals(employeesByGender.get(0).getGender(), "female");
-        assertEquals(employeesByGender.get(0).getSalary(), 10000);
-        assertEquals(employeesByGender.get(1).getId(), 2);
-        assertEquals(employeesByGender.get(1).getName(), "Mathew");
-        assertEquals(employeesByGender.get(1).getAge(), 25);
-        assertEquals(employeesByGender.get(1).getGender(), "female");
-        assertEquals(employeesByGender.get(1).getSalary(), 8000);
+        assertEquals(employeesByGender.get(0), FirstEmployee);
+        assertEquals(employeesByGender.get(1), SecondEmployee);
     }
 
     @Test
@@ -153,15 +133,7 @@ public class EmployeeServiceTest {
         List<Employee> employeeByPage = employeeService.findByPage(1, 2);
 
         //then
-        assertEquals(employeeByPage.get(0).getId(), 1);
-        assertEquals(employeeByPage.get(0).getName(), "Susan");
-        assertEquals(employeeByPage.get(0).getAge(), 23);
-        assertEquals(employeeByPage.get(0).getGender(), "female");
-        assertEquals(employeeByPage.get(0).getSalary(), 10000);
-        assertEquals(employeeByPage.get(1).getId(), 2);
-        assertEquals(employeeByPage.get(1).getName(), "Mathew");
-        assertEquals(employeeByPage.get(1).getAge(), 25);
-        assertEquals(employeeByPage.get(1).getGender(), "female");
-        assertEquals(employeeByPage.get(1).getSalary(), 8000);
+        assertEquals(employeeByPage.get(0), FirstEmployee);
+        assertEquals(employeeByPage.get(1), SecondEmployee);
     }
 }

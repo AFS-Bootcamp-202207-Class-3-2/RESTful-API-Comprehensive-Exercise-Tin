@@ -34,8 +34,8 @@ public class EmployeeService {
         return employeeRepository.insert(employee);
     }
 
-    public Employee delete(int id) {
-        return employeeRepository.delete(id);
+    public void delete(int id) {
+        employeeRepository.delete(id);
     }
 
     public Employee findById(int id) {
