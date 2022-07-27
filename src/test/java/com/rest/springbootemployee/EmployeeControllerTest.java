@@ -129,4 +129,21 @@ public class EmployeeControllerTest {
         List<Employee> employees = employeeRepository.findAll();
         assertThat(employees, hasSize(0));
     }
+
+    @Test
+    void should_get_a_employee_when_perform_get_given_id() throws Exception{
+        //given
+        employeeRepository.insert(new Employee(0, "Sally", 22, "female", 10000));
+
+        //when
+        client.perform(MockMvcRequestBuilders.get("/employees/{id}",0))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Sally"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(22))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value("female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(10000));
+
+        //then
+    }
 }
