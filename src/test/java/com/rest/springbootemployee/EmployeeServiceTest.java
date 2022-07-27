@@ -81,14 +81,19 @@ public class EmployeeServiceTest {
     @Test
     void should_a_employee_when_delete_given_id() {
         //given
-        Employee employeeToCreate = new Employee(1, "Susan", 23, "female", 10000);
-        given(employeeRepository.insert(employeeToCreate)).willReturn(employeeToCreate);
-        employeeService.create(employeeToCreate);
+        Employee employee= new Employee(1, "Susan", 23, "female", 10000);
+        given(employeeRepository.delete(1)).willReturn(employee);
+
         //when
         Employee deletedEmployee = employeeService.delete(1);
 
         //then
-        assertNull(deletedEmployee);
+        assertEquals(deletedEmployee.getId(), 1);
+        assertEquals(deletedEmployee.getName(), "Susan");
+        assertEquals(deletedEmployee.getAge(), 23);
+        assertEquals(deletedEmployee.getGender(), "female");
+        assertEquals(deletedEmployee.getSalary(), 10000);
     }
+
 
 }
