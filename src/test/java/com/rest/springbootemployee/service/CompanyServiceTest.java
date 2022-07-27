@@ -120,7 +120,7 @@ public class CompanyServiceTest {
         given(companyRepository.update(1,companyToUpdate)).willReturn(updatedCompany);
 
         //when
-        Company company = companyService.update(1, updatedCompany);
+        Company company = companyService.update(1, companyToUpdate);
 
         //then
         assertEquals(updatedCompany, company);
