@@ -3,22 +3,23 @@ package com.rest.springbootemployee;
 import com.rest.springbootemployee.pojo.Company;
 import com.rest.springbootemployee.pojo.Employee;
 import com.rest.springbootemployee.repository.CompanyRepository;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.util.MultiValueMapAdapter;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 
@@ -101,7 +102,6 @@ class CompanyControllerTest {
         //then
     }
 
-
     @Test
     void should_get_companies_when_perform_get_given_page_and_page_size() throws Exception{
         //given
@@ -131,5 +131,55 @@ class CompanyControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].employeeList[*].salary", containsInAnyOrder(10000, 5000)));
 
         //then
+    }
+
+    @Test
+    void should_create_a_new_company_when_perform_post_given_a_company() throws Exception{
+        //given
+        String newCompanyJson = "{\n" +
+                "    \"id\": 1,\n" +
+                "    \"companyName\": \"OOCL\",\n" +
+                "    \"employeeList\": [\n" +
+                "        {\n" +
+                "            \"id\": 1,\n" +
+                "            \"name\": \"Tom\",\n" +
+                "            \"age\": 23,\n" +
+                "            \"gender\": \"male\",\n" +
+                "            \"salary\": 8000\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"id\": 2,\n" +
+                "            \"name\": \"Sally\",\n" +
+                "            \"age\": 24,\n" +
+                "            \"gender\": \"male\",\n" +
+                "            \"salary\": 6000\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        //when
+        client.perform(MockMvcRequestBuilders.post("/companies")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newCompanyJson))
+                .andExpect(MockMvcResultMatchers.status().isCreated())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.companyName").value("OOCL"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].name", containsInAnyOrder("Tom","Sally")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].age", containsInAnyOrder(23, 24)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].gender", everyItem(is("male"))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].salary", containsInAnyOrder(8000, 6000)));
+
+        //then
+        List<Company> companies = companyRepository.findAll();
+        assertThat(companies, hasSize(1));
+        assertThat(companies.get(0).getCompanyName(), equalTo("OOCL"));
+        assertThat(companies.get(0).getEmployeeList().get(0).getName(), equalTo("Tom"));
+        assertThat(companies.get(0).getEmployeeList().get(0).getAge(), equalTo(23));
+        assertThat(companies.get(0).getEmployeeList().get(0).getGender(), equalTo("male"));
+        assertThat(companies.get(0).getEmployeeList().get(0).getSalary(), equalTo(8000));
+        assertThat(companies.get(0).getEmployeeList().get(1).getName(), equalTo("Sally"));
+        assertThat(companies.get(0).getEmployeeList().get(1).getAge(), equalTo(24));
+        assertThat(companies.get(0).getEmployeeList().get(1).getGender(), equalTo("male"));
+        assertThat(companies.get(0).getEmployeeList().get(1).getSalary(), equalTo(6000));
     }
 }
