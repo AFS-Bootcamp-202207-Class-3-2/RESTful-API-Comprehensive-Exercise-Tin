@@ -87,4 +87,21 @@ public class CompanyServiceTest {
         //then
         assertEquals(ooclCompany, companiesByPage.get(0));
     }
+
+    @Test
+    void should_a_new_company_when_create_given_a_company() {
+        //given
+        ArrayList<Employee> ooclEmployees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        Company companyToCreate = new Company(1, "OOCL", ooclEmployees);
+        given(companyRepository.insert(companyToCreate)).willReturn(companyToCreate);
+
+        //when
+        Company company = companyService.create(companyToCreate);
+
+        //then
+        assertEquals(companyToCreate, company);
+    }
 }
