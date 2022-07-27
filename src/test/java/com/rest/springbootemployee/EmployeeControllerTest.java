@@ -12,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import java.awt.geom.GeneralPath;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -43,12 +42,12 @@ public class EmployeeControllerTest {
         //when
         client.perform(MockMvcRequestBuilders.get("/employees"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(4)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)))
                 .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("AAA"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(23))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value("male"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(8000));
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Sally"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(22))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value("female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(10000));
 
         //then
     }
@@ -67,11 +66,11 @@ public class EmployeeControllerTest {
         client.perform(MockMvcRequestBuilders.post("/employees")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(newEmployeeJson))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").isNumber())
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].name").value("Lisa"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].age").value(21))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].gender").value("female"))
-                .andExpect(MockMvcResultMatchers.jsonPath("$[0].salary").value(2000));
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.name").value("Lisa"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.age").value(21))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.gender").value("female"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.salary").value(2000));
 
         //then
         List<Employee> employees = employeeRepository.findAll();
