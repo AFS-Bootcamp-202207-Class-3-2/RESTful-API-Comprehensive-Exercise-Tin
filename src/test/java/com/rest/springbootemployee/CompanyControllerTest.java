@@ -238,4 +238,22 @@ class CompanyControllerTest {
         assertThat(companies.get(0).getEmployeeList().get(1).getGender(), equalTo("male"));
         assertThat(companies.get(0).getEmployeeList().get(1).getSalary(), equalTo(6000));
     }
+
+    @Test
+    void should_delete_employee_when_perform_delete_given_a_employee() throws Exception {
+        //given
+        ArrayList<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Tom", 23, "male", 8000));
+            add(new Employee(2, "Sally", 24, "male", 6000));
+        }};
+        companyRepository.insert(new Company(1, "OOCL", employees));
+
+        //when
+        client.perform(MockMvcRequestBuilders.delete("/companies/{id}",0))
+                .andExpect(MockMvcResultMatchers.status().isNoContent());
+
+        //then
+        List<Company> companies = companyRepository.findAll();
+        assertThat(companies, hasSize(0));
+    }
 }
