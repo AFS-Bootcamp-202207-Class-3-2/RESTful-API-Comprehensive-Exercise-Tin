@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,7 +49,6 @@ public class CompanyServiceTest {
     @Test
     void should_a_company_when_find_by_id() {
         //given
-        ArrayList<Company> companies = new ArrayList<>();
         ArrayList<Employee> employees = new ArrayList<Employee>() {{
             add(new Employee(1, "Sally", 22, "female", 10000));
             add(new Employee(1, "Lily", 26, "female", 5000));
@@ -61,5 +61,30 @@ public class CompanyServiceTest {
 
         //then
         assertEquals(ooclCompany, company);
+    }
+
+    @Test
+    void should_companies_when_find_by_page_and_page_size() {
+        //given
+        ArrayList<Company> companies = new ArrayList<>();
+        ArrayList<Employee> ooclEmployees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        Company ooclCompany = new Company(1, "OOCL", ooclEmployees);
+        ArrayList<Employee> coscoEmployees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Sally", 22, "female", 10000));
+            add(new Employee(1, "Lily", 26, "female", 5000));
+        }};
+        Company coscoCompany = new Company(1, "COSU", coscoEmployees);
+        companies.add(ooclCompany);
+        companies.add(coscoCompany);
+        given(companyRepository.findByPage(1,1)).willReturn(Collections.singletonList(ooclCompany));
+
+        //when
+        List<Company> companiesByPage = companyService.findByPage(1, 1);
+
+        //then
+        assertEquals(ooclCompany, companiesByPage.get(0));
     }
 }

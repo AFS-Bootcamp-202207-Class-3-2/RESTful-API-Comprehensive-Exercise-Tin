@@ -20,4 +20,8 @@ public class CompanyService {
     public Company findById(int id) {
         return companyRepository.findById(id);
     }
+
+    public List<Company> findByPage(int page, int pageSize) {
+        return companyRepository.findByPage(page, pageSize);
+    }
 }
