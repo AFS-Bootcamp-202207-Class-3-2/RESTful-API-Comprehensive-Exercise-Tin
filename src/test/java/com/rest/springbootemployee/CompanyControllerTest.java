@@ -182,4 +182,60 @@ class CompanyControllerTest {
         assertThat(companies.get(0).getEmployeeList().get(1).getGender(), equalTo("male"));
         assertThat(companies.get(0).getEmployeeList().get(1).getSalary(), equalTo(6000));
     }
+
+    @Test
+    void should_update_company_when_perform_put_given_a_company() throws Exception{
+        ArrayList<Employee> employees = new ArrayList<Employee>() {{
+            add(new Employee(1, "Tom", 23, "male", 8000));
+            add(new Employee(2, "Sally", 24, "male", 6000));
+        }};
+        companyRepository.insert(new Company(1, "OOCL", employees));
+
+        //given
+        String updatedCompanyJson = "{\n" +
+                "    \"id\": 1,\n" +
+                "    \"companyName\": \"COSCO\",\n" +
+                "    \"employeeList\": [\n" +
+                "        {\n" +
+                "            \"id\": 1,\n" +
+                "            \"name\": \"Tom\",\n" +
+                "            \"age\": 23,\n" +
+                "            \"gender\": \"male\",\n" +
+                "            \"salary\": 8000\n" +
+                "        },\n" +
+                "        {\n" +
+                "            \"id\": 2,\n" +
+                "            \"name\": \"Sally\",\n" +
+                "            \"age\": 24,\n" +
+                "            \"gender\": \"male\",\n" +
+                "            \"salary\": 6000\n" +
+                "        }\n" +
+                "    ]\n" +
+                "}";
+
+        //when
+        client.perform(MockMvcRequestBuilders.put("/companies/{id}",0)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(updatedCompanyJson))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.id").isNumber())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.companyName").value("COSCO"))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].name", containsInAnyOrder("Tom","Sally")))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].age", containsInAnyOrder(23, 24)))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].gender", everyItem(is("male"))))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.employeeList[*].salary", containsInAnyOrder(8000, 6000)));
+
+        //then
+        List<Company> companies = companyRepository.findAll();
+        assertThat(companies, hasSize(1));
+        assertThat(companies.get(0).getCompanyName(), equalTo("COSCO"));
+        assertThat(companies.get(0).getEmployeeList().get(0).getName(), equalTo("Tom"));
+        assertThat(companies.get(0).getEmployeeList().get(0).getAge(), equalTo(23));
+        assertThat(companies.get(0).getEmployeeList().get(0).getGender(), equalTo("male"));
+        assertThat(companies.get(0).getEmployeeList().get(0).getSalary(), equalTo(8000));
+        assertThat(companies.get(0).getEmployeeList().get(1).getName(), equalTo("Sally"));
+        assertThat(companies.get(0).getEmployeeList().get(1).getAge(), equalTo(24));
+        assertThat(companies.get(0).getEmployeeList().get(1).getGender(), equalTo("male"));
+        assertThat(companies.get(0).getEmployeeList().get(1).getSalary(), equalTo(6000));
+    }
 }
